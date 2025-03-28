@@ -14,12 +14,7 @@ from tkinter import ttk
 import RPi.GPIO as GPIO
 import subprocess
 import warnings
-
-
-
 from PIL import Image, ImageTk
-
-
 import requests
 import io
 import numpy as np
@@ -34,14 +29,21 @@ OCR_SIZE = 224
 DISPLAY_WIDTH = 640
 DISPLAY_HEIGHT = 480
 FPS = 60
-
 FRAME_BUFFER_SIZE = 1  # ลดขนาด buffer ลงเพื่อลดความล่าช้า
+
+CAMERA_SRC = 0
+
+
+API_URL =  "http://10.240.67.29:3000/parking/entry-raspi"
 
 # กำหนดค่า GPIO pins
 BUTTON_PIN = 31
 RED_LIGHT_PIN = 16
 GREEN_LIGHT_PIN = 18
 IR_SENSOR_PIN = 22
+
+
+
 
 # กำหนดค่า Trigger Zone
 ZONE_LEFT = 30
@@ -52,8 +54,7 @@ ZONE_BOTTOM = 100
 stop_event = threading.Event()
 last_successful_plate = None
 current_frame = None  # เพิ่มตัวแปร global สำหรับเก็บ frame ปัจจุบัน
-#API_URL =  "http://jjsornwakii.3bbddns.com:34724/parking/entry-raspi"
-API_URL =  "http://10.240.67.29:3000/parking/entry-raspi"
+
 def setup_gpio():
     """ตั้งค่าเริ่มต้นสำหรับ GPIO ทั้งหมด"""
     # ทำความสะอาด GPIO ก่อนเริ่มต้น
@@ -469,8 +470,7 @@ def main():
         model.max_det = 1
 
         # เตรียม camera
-        #cap = cv2.VideoCapture("rtsp://admin:kmitl2025@192.168.1.64:554/stream")
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(CAMERA_SRC)
         if not cap.isOpened():
             raise ValueError("ไม่สามารถเปิดกล้องได้")
             
