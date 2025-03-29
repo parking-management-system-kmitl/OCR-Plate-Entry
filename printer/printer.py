@@ -9,6 +9,7 @@ p = Usb(0x0483, 0x070B, 0)
 try:
     # รับค่าหมายเลขทะเบียนจาก argument
     plate_number = sys.argv[1] if len(sys.argv) > 1 else "UNKNOWN"
+    api_url = sys.argv[2] if len(sys.argv) > 1 else "localhost"
     #plate_number = "kmitl"
 
     print(plate_number)
@@ -73,7 +74,7 @@ try:
         box_size=10,
         border=4,
     )
-    qr.add_data(f'http://jjsornwakii.3bbddns.com:34721/landing?id={plate_number}')  # ฝังทะเบียนรถใน QR
+    qr.add_data(f'{api_url}/landing?id={plate_number}')  # ฝังทะเบียนรถใน QR
     qr.make(fit=True)
 
     # Create QR Code Image

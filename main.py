@@ -34,7 +34,7 @@ FRAME_BUFFER_SIZE = 1  # ลดขนาด buffer ลงเพื่อลด�
 CAMERA_SRC = 0
 
 
-API_URL =  "http://10.240.67.29:3000/parking/entry-raspi"
+API_URL =  "http://10.240.67.29:3000"
 
 # กำหนดค่า GPIO pins
 BUTTON_PIN = 31
@@ -95,7 +95,7 @@ def turn_green():
 
 def run_printer_script(plate_number):
     print(f"Running printer.py with plate number: {plate_number}")
-    subprocess.run(["python3", "printer/printer.py", plate_number])
+    subprocess.run(["python3", "printer/printer.py", plate_number,API_URL])
 
 def button_listener(frame_queue):
     """ฟังก์ชันรอรับการกดปุ่มและจัดการการส่งข้อมูล"""
@@ -221,7 +221,7 @@ def send_data(api_url: str, frame: np.ndarray, license_plate: str):
         files = {"image": (filename, image_io, "image/jpeg")}
 
         # ส่งข้อมูลไปยัง API
-        response = requests.post(api_url, data=data, files=files)
+        response = requests.post(api_url+"/parking/entry-raspi", data=data, files=files)
         response_data = response.json()
 
         # ตรวจสอบ success จากการตอบกลับ
