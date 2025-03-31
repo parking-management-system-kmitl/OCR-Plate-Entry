@@ -34,7 +34,7 @@ FRAME_BUFFER_SIZE = 1  # ลดขนาด buffer ลงเพื่อลด�
 CAMERA_SRC = 0
 
 
-API_URL =  "http://10.240.67.29:3000"
+API_SERVER =  "http://10.240.67.29:3000"
 
 # กำหนดค่า GPIO pins
 BUTTON_PIN = 31
@@ -95,7 +95,7 @@ def turn_green():
 
 def run_printer_script(plate_number):
     print(f"Running printer.py with plate number: {plate_number}")
-    subprocess.run(["python3", "printer/printer.py", plate_number,API_URL])
+    subprocess.run(["python3", "printer/printer.py", plate_number,API_SERVER])
 
 def button_listener(frame_queue):
     """ฟังก์ชันรอรับการกดปุ่มและจัดการการส่งข้อมูล"""
@@ -115,7 +115,7 @@ def button_listener(frame_queue):
                         print(f"กำลังส่งข้อมูลป้ายทะเบียน: {last_successful_plate}")
                         
                         # ส่งข้อมูลไปยัง server
-                        if send_data(API_URL, current_frame, last_successful_plate):
+                        if send_data(API_SERVER, current_frame, last_successful_plate):
                             print("ส่งข้อมูลสำเร็จ")
                             run_printer_script(last_successful_plate)
                         else:
@@ -196,11 +196,11 @@ def get_formatted_time():
 
 ################################# ส่งข้อมูลไป Server ####################
 
-def send_data(api_url: str, frame: np.ndarray, license_plate: str):
+def send_data(API_SERVER: str, frame: np.ndarray, license_plate: str):
     """ส่งข้อมูลไปยัง Server
 
     Args:
-        api_url (str): URL ของ API
+        API_SERVER (str): URL ของ API
         frame (np.ndarray): ภาพที่จะส่ง
         license_plate (str): หมายเลขทะเบียนรถ
 
@@ -221,7 +221,7 @@ def send_data(api_url: str, frame: np.ndarray, license_plate: str):
         files = {"image": (filename, image_io, "image/jpeg")}
 
         # ส่งข้อมูลไปยัง API
-        response = requests.post(api_url+"/parking/entry-raspi", data=data, files=files)
+        response = requests.post(API_SERVER+"/parking/entry-raspi", data=data, files=files)
         response_data = response.json()
 
         # ตรวจสอบ success จากการตอบกลับ
